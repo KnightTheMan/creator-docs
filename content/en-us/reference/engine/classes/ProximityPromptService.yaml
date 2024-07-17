@@ -60,6 +60,12 @@ properties:
     description: |
       This property indicates the maximum number of
       `Class.ProximityPrompt|ProximityPrompts` that will be shown to the player.
+
+      ```lua
+      local ProximityPromptService = game:GetService("ProximityPromptService")
+
+      print(ProximityPromptService.MaxPromptsVisible)
+      ```
     code_samples:
     type: int
     tags: []
@@ -83,6 +89,15 @@ events:
       This event triggers when the player begins holding down the
       `Class.ProximityPrompt.KeyboardKeyCode|KeyboardKeyCode` key/button on a
       prompt with a non-zero `Class.ProximityPrompt.HoldDuration|HoldDuration`.
+
+      ```lua
+      local ProximityPromptService = game:GetService("ProximityPromptService"
+      local function PromptButtonHoldBegan(prompt, playerWhoTriggered)
+	      print("Prompt is being held down!")
+      end
+      
+      ProximityPromptService.PromptButtonHoldBegan:Connect(PromptButtonHoldBegan)
+      ```
     code_samples:
     parameters:
       - name: prompt
@@ -147,6 +162,9 @@ events:
     description: |
       This event triggers client-side in connected local scripts when a prompt
       becomes visible.
+
+      ```lua
+      
     code_samples:
     parameters:
       - name: prompt
@@ -173,6 +191,16 @@ events:
       `Class.ProximityPrompt.KeyboardKeyCode|KeyboardKeyCode` key/button while
       triggering a prompt. This is intended to allow interactions which require
       the player to hold a key/button while something happens in-experience.
+
+      ```lua
+      local ProximityPromptService = game:GetService("ProximityPromptService")
+
+      local function PromptTriggerEnded(prompt, playerWhoTriggered)
+      	print("Prompt was triggered!")
+      end
+      
+      ProximityPromptService.PromptTriggerEnded:Connect(PromptTriggerEnded)
+      ```
     code_samples:
     parameters:
       - name: prompt
@@ -198,7 +226,52 @@ events:
       key/button is pressed, or after a specified amount of time holding the
       key/button if the prompt's
       `Class.ProximityPrompt.HoldDuration|HoldDuration` is non-zero.
-    code_samples:
+
+      ```lua
+      local ProximityPromptService = game:GetService("ProximityPromptService")
+      
+      local function PromptTriggered(prompt, playerWhoTriggered)
+        print("Prompt was triggered!")
+      end
+      
+      ProximityPromptService.PromptTriggered:Connect(PromptTriggered)
+      ```
+    code_samples: |
+      This code sample adds a `Class.ProximityPrompt` object to each of two 
+      `Class.BasePart`objects labeled "Part1" and "Part2". The code uses 
+      `Class.ProximityPromptService` to toggle the `Class.BasePart.CanCollide` Value
+      of another `Class.Basepart` labeled "Door", depending on which prompt was triggered.
+
+      ```lua
+      local ProximityPromptService = game:GetService("ProximityPromptService")
+      
+      local Part1 = workspace.Part1 --Add a part to the workspace named "Part1"
+      local Prompt1 = Instance.new("ProximityPrompt")
+      Prompt1.Parent = Part1
+      Prompt1.Name = "The First Prompt"
+      
+      local Part2 = workspace.Part2 --Add a part to the workspace named "Part1"
+      local Prompt2 = Instance.new("ProximityPrompt")
+      Prompt2.Parent = Part2
+      Prompt2.Name = "The Second Prompt"
+      
+      local Door = workspace.Door --Add a part to the workspace named "Door"
+      
+      local function PromptTriggered(prompt, playerWhoTriggered)
+      	if prompt == Prompt1 then --Open the door
+      		Door.CanCollide = false
+      		Door.Transparency = 0.5
+      		print("The door has opened!")
+      	elseif prompt == Prompt2 then --Close the door
+      		Door.CanCollide = true
+      		Door.Transparency = 0
+      		print("The door has closed!")
+      	end
+      end
+      
+      ProximityPromptService.PromptTriggered:Connect(PromptTriggered) --Connect the function
+      ```
+      
     parameters:
       - name: prompt
         type: ProximityPrompt
